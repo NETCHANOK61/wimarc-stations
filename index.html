@@ -213,245 +213,245 @@
         var maps, markers = [],
             currentType = 'all';
         var myData = [{
-                name: "wimarc01",
-                location: "12.732282, 101.851764",
-                status: false,
-                owner: 'คุณบุษบา',
-                customer_check: false,
-                appointment: '16/3/2569 13.00 น.'
-            },
-            {
-                name: "wimarc02",
-                location: "12.678464, 101.862864",
-                status: false,
-                owner: 'คุณยุทธยงค์',
-                customer_check: false,
-                appointment: '16/3/2569 15.30 น.'
-            },
-            {
-                name: "wimarc03",
-                location: "12.9658935,102.0816115",
-                status: false,
-                owner: 'คุณสนิท',
-                customer_check: false,
-                appointment: '23/3/2569 13.00 น.'
-            },
-            {
-                name: "wimarc04",
-                location: "12.9726188,102.0820655",
-                status: false,
-                owner: 'คุณบรรเจิด',
-                customer_check: false,
-                appointment: '23/3/2569 15.00 น.'
-            },
-            {
-                name: "wimarc05",
-                location: "12.840496,102.034339",
-                status: false,
-                owner: 'คุณจุมพล',
-                customer_check: true,
-                appointment: '28/3/2569 08.30 น.'
-            },
-            {
-                name: "wimarc06",
-                location: "12.611287,102.042947",
-                status: false,
-                owner: 'คุณจุมพล',
-                customer_check: false,
-                appointment: '17/3/2569 15.00 น.'
-            },
-            {
-                name: "wimarc07",
-                location: "12.996834,101.681271",
-                status: false,
-                owner: 'คุณพีรพล',
-                customer_check: false,
-                appointment: '26/3/2569 13.00 น.'
-            },
-            {
-                name: "wimarc08",
-                location: "12.294404,102.336026",
-                status: false,
-                owner: 'คุณนภกร',
-                customer_check: false,
-                appointment: '28/3/2569 14.00 น.'
-            },
-            {
-                name: "wimarc09",
-                location: "12.294404,102.336026",
-                status: false,
-                owner: 'คุณนภกร',
-                customer_check: true,
-                appointment: '28/3/2569 14.00 น.'
-            },
-            {
-                name: "wimarc10",
-                location: "12.8019996,101.76122",
-                status: false,
-                owner: 'คุณสำริทธิ์',
-                customer_check: false,
-                appointment: '16/3/2569 08.30 น.'
-            },
-            {
-                name: "wimarc11",
-                location: "12.7953271,102.1166199",
-                status: false,
-                owner: 'คุณอุมาภรณ์',
-                customer_check: false,
-                appointment: '18/3/2569 15.00 น.'
-            },
-            {
-                name: "wimarc12",
-                location: "12.723251,102.094171",
-                status: false,
-                owner: 'คุณวงสิน',
-                customer_check: false,
-                appointment: '18/3/2569 08.30 น.'
-            },
-            {
-                name: "wimarc13",
-                location: "12.5460791,102.3555228",
-                status: false,
-                owner: 'คุณพงศกร',
-                customer_check: false,
-                appointment: '25/3/2569 15.00 น.'
-            },
-            {
-                name: "wimarc14",
-                location: "12.507163,102.254929",
-                status: false,
-                owner: 'คุณณัฐวรรณ',
-                customer_check: false,
-                appointment: '25/3/2569 11.30 น.'
-            },
-            {
-                name: "wimarc15",
-                location: "13.0441232,102.0122386",
-                status: false,
-                owner: 'คุณเจษฎา',
-                customer_check: false,
-                appointment: '24/3/2569 10.00 น.'
-            },
-            {
-                name: "wimarc16",
-                location: "12.9523333,102.0851389",
-                status: false,
-                owner: 'คุณบานชื่น',
-                customer_check: false,
-                appointment: '23/3/2569 08.30 น.'
-            },
-            {
-                name: "wimarc17",
-                location: "12.796557,102.230057",
-                status: false,
-                owner: 'คุณณีรนุช',
-                customer_check: false,
-                appointment: '19/3/2569 13.00 น.'
-            },
-            {
-                name: "wimarc18",
-                location: "12.824348,101.99133",
-                status: false,
-                owner: 'คุณพรนภา',
-                customer_check: false,
-                appointment: '20/3/2569 08.30 น.'
-            },
-            {
-                name: "wimarc19",
-                location: "12.661213,101.978407",
-                status: false,
-                owner: 'คุณกนกวรรณ',
-                customer_check: false,
-                appointment: '17/3/2569 11.30 น.'
-            },
-            {
-                name: "wimarc20",
-                location: "12.88253,102.012395",
-                status: false,
-                owner: 'คุณฑีประจักษ์',
-                customer_check: true,
-                appointment: '21/3/2569 10.00 น.'
-            },
-            {
-                name: "wimarc21",
-                location: "12.8258683,101.9714885",
-                status: false,
-                owner: 'คุณกัญจนรัตน์',
-                customer_check: false,
-                appointment: '20/3/2569 11.30 น.'
-            },
-            {
-                name: "wimarc22",
-                location: "12.7042945,101.994341",
-                status: false,
-                owner: 'คุณมินตรา',
-                customer_check: false,
-                appointment: '17/3/2569 08.30 น.'
-            },
-            {
-                name: "wimarc23",
-                location: "12.7690185,102.2643145",
-                status: false,
-                owner: 'คุณบัณฑิต',
-                customer_check: false,
-                appointment: '19/3/2569 15.00 น.'
-            },
-            {
-                name: "wimarc24",
-                location: "12.752345,102.208851",
-                status: false,
-                owner: 'คุณสันฐิตา',
-                customer_check: false,
-                appointment: '19/3/2569 08.00 น.'
-            },
-            {
-                name: "wimarc25",
-                location: "12.773996,102.184929",
-                status: false,
-                owner: 'คุณรัชณีวรรณ',
-                customer_check: false,
-                appointment: '19/3/2569 11.00 น.'
-            },
-            {
-                name: "wimarc26",
-                location: "12.778423,102.084564",
-                status: false,
-                owner: 'คุณพิพัฒน์',
-                customer_check: false,
-                appointment: '27/3/2569 08.30 น.'
-            },
-            {
-                name: "wimarc27",
-                location: "12.778423,102.084564",
-                status: false,
-                owner: 'คุณสุวิจักขณ์',
-                customer_check: false,
-                appointment: '27/3/2569 13.00 น.'
-            },
-            {
-                name: "wimarc28",
-                location: "12.509989,102.167736",
-                status: false,
-                owner: 'คุณอาทิตย์',
-                customer_check: false,
-                appointment: '25/3/2569 08.30 น.'
-            },
-            {
-                name: "wimarc29",
-                location: "12.8184569,101.5935864",
-                status: true,
-                owner: 'คุณณรงค์ชัย',
-                customer_check: false,
-                appointment: '18/3/2569 13.00 น.'
-            },
-            {
-                name: "wimarc30",
-                location: "12.379476, 102.440725",
-                status: false,
-                owner: 'คุณธีรโชติ',
-                customer_check: false,
-                appointment: '26/3/2569 08.30 น.'
-            }
+            name: "wimarc01",
+            location: "12.732282, 101.851764",
+            status: false,
+            owner: 'คุณบุษบา',
+            customer_check: false,
+            appointment: '16/3/2569 13.00 น.'
+        },
+        {
+            name: "wimarc02",
+            location: "12.678464, 101.862864",
+            status: false,
+            owner: 'คุณยุทธยงค์',
+            customer_check: false,
+            appointment: '16/3/2569 15.30 น.'
+        },
+        {
+            name: "wimarc03",
+            location: "12.9658935,102.0816115",
+            status: false,
+            owner: 'คุณสนิท',
+            customer_check: false,
+            appointment: '23/3/2569 13.00 น.'
+        },
+        {
+            name: "wimarc04",
+            location: "12.9726188,102.0820655",
+            status: false,
+            owner: 'คุณบรรเจิด',
+            customer_check: false,
+            appointment: '23/3/2569 15.00 น.'
+        },
+        {
+            name: "wimarc05",
+            location: "12.840496,102.034339",
+            status: false,
+            owner: 'คุณจุมพล',
+            customer_check: true,
+            appointment: '28/3/2569 08.30 น.'
+        },
+        {
+            name: "wimarc06",
+            location: "12.611287,102.042947",
+            status: false,
+            owner: 'คุณจุมพล',
+            customer_check: false,
+            appointment: '17/3/2569 15.00 น.'
+        },
+        {
+            name: "wimarc07",
+            location: "12.996834,101.681271",
+            status: false,
+            owner: 'คุณพีรพล',
+            customer_check: false,
+            appointment: '26/3/2569 13.00 น.'
+        },
+        {
+            name: "wimarc08",
+            location: "12.294404,102.336026",
+            status: false,
+            owner: 'คุณนภกร',
+            customer_check: false,
+            appointment: '28/3/2569 14.00 น.'
+        },
+        {
+            name: "wimarc09",
+            location: "12.294404,102.336026",
+            status: false,
+            owner: 'คุณนภกร',
+            customer_check: true,
+            appointment: '28/3/2569 14.00 น.'
+        },
+        {
+            name: "wimarc10",
+            location: "12.8019996,101.76122",
+            status: false,
+            owner: 'คุณสำริทธิ์',
+            customer_check: false,
+            appointment: '16/3/2569 08.30 น.'
+        },
+        {
+            name: "wimarc11",
+            location: "12.7953271,102.1166199",
+            status: false,
+            owner: 'คุณอุมาภรณ์',
+            customer_check: false,
+            appointment: '18/3/2569 15.00 น.'
+        },
+        {
+            name: "wimarc12",
+            location: "12.723251,102.094171",
+            status: false,
+            owner: 'คุณวงสิน',
+            customer_check: false,
+            appointment: '18/3/2569 08.30 น.'
+        },
+        {
+            name: "wimarc13",
+            location: "12.5460791,102.3555228",
+            status: false,
+            owner: 'คุณพงศกร',
+            customer_check: false,
+            appointment: '25/3/2569 15.00 น.'
+        },
+        {
+            name: "wimarc14",
+            location: "12.507163,102.254929",
+            status: false,
+            owner: 'คุณณัฐวรรณ',
+            customer_check: false,
+            appointment: '25/3/2569 11.30 น.'
+        },
+        {
+            name: "wimarc15",
+            location: "13.0441232,102.0122386",
+            status: false,
+            owner: 'คุณเจษฎา',
+            customer_check: false,
+            appointment: '24/3/2569 10.00 น.'
+        },
+        {
+            name: "wimarc16",
+            location: "12.9523333,102.0851389",
+            status: false,
+            owner: 'คุณบานชื่น',
+            customer_check: false,
+            appointment: '23/3/2569 08.30 น.'
+        },
+        {
+            name: "wimarc17",
+            location: "12.796557,102.230057",
+            status: false,
+            owner: 'คุณณีรนุช',
+            customer_check: false,
+            appointment: '19/3/2569 13.00 น.'
+        },
+        {
+            name: "wimarc18",
+            location: "12.824348,101.99133",
+            status: false,
+            owner: 'คุณพรนภา',
+            customer_check: false,
+            appointment: '20/3/2569 08.30 น.'
+        },
+        {
+            name: "wimarc19",
+            location: "12.661213,101.978407",
+            status: false,
+            owner: 'คุณกนกวรรณ',
+            customer_check: false,
+            appointment: '17/3/2569 11.30 น.'
+        },
+        {
+            name: "wimarc20",
+            location: "12.88253,102.012395",
+            status: false,
+            owner: 'คุณฑีประจักษ์',
+            customer_check: true,
+            appointment: '21/3/2569 10.00 น.'
+        },
+        {
+            name: "wimarc21",
+            location: "12.8258683,101.9714885",
+            status: false,
+            owner: 'คุณกัญจนรัตน์',
+            customer_check: false,
+            appointment: '20/3/2569 11.30 น.'
+        },
+        {
+            name: "wimarc22",
+            location: "12.7042945,101.994341",
+            status: false,
+            owner: 'คุณมินตรา',
+            customer_check: false,
+            appointment: '17/3/2569 08.30 น.'
+        },
+        {
+            name: "wimarc23",
+            location: "12.7690185,102.2643145",
+            status: false,
+            owner: 'คุณบัณฑิต',
+            customer_check: false,
+            appointment: '19/3/2569 15.00 น.'
+        },
+        {
+            name: "wimarc24",
+            location: "12.752345,102.208851",
+            status: false,
+            owner: 'คุณสันฐิตา',
+            customer_check: false,
+            appointment: '19/3/2569 08.00 น.'
+        },
+        {
+            name: "wimarc25",
+            location: "12.773996,102.184929",
+            status: false,
+            owner: 'คุณรัชณีวรรณ',
+            customer_check: false,
+            appointment: '19/3/2569 11.00 น.'
+        },
+        {
+            name: "wimarc26",
+            location: "12.778423,102.084564",
+            status: false,
+            owner: 'คุณพิพัฒน์',
+            customer_check: false,
+            appointment: '27/3/2569 08.30 น.'
+        },
+        {
+            name: "wimarc27",
+            location: "12.778423,102.084564",
+            status: false,
+            owner: 'คุณสุวิจักขณ์',
+            customer_check: false,
+            appointment: '27/3/2569 13.00 น.'
+        },
+        {
+            name: "wimarc28",
+            location: "12.509989,102.167736",
+            status: false,
+            owner: 'คุณอาทิตย์',
+            customer_check: false,
+            appointment: '25/3/2569 08.30 น.'
+        },
+        {
+            name: "wimarc29",
+            location: "12.8184569,101.5935864",
+            status: true,
+            owner: 'คุณณรงค์ชัย',
+            customer_check: false,
+            appointment: '18/3/2569 13.00 น.'
+        },
+        {
+            name: "wimarc30",
+            location: "12.379476, 102.440725",
+            status: false,
+            owner: 'คุณธีรโชติ',
+            customer_check: false,
+            appointment: '26/3/2569 08.30 น.'
+        }
         ];
 
         function initMap() {
@@ -484,39 +484,44 @@
             $('#station-list').empty();
             $.each(data, function (i, item) {
                 var coords = item.location.split(",");
-                var lat = parseFloat(coords[0]),
-                    lng = parseFloat(coords[1]);
+                var lat = parseFloat(coords[0]), lng = parseFloat(coords[1]);
+
+                // เลือกสี Icon ตามสถานะ
                 var iconFile = item.customer_check ? "client.png" : (item.status ? "check.png" : "main.png");
+
                 var marker = new google.maps.Marker({
-                    position: {
-                        lat: lat,
-                        lng: lng
-                    },
+                    position: { lat: lat, lng: lng },
                     map: maps,
                     icon: {
-                        url: iconFile
+                        url: iconFile,
+                        labelOrigin: new google.maps.Point(15, -12) // จัดตำแหน่ง Label ให้อยู่เหนือหมุด
+                    },
+                    label: {
+                        text: item.name,
+                        color: item.customer_check ? "#b45309" : "#000",
+                        fontWeight: "bold",
+                        fontSize: "11px"
                     }
                 });
-                markers.push({
-                    ...item,
-                    marker: marker,
-                    date: item.appointment.split(' ')[0]
-                });
+
+                markers.push({ ...item, marker: marker, date: item.appointment.split(' ')[0] });
 
                 var card = $(`
-                    <div class="station-card ${item.status ? 'done' : ''} ${item.customer_check ? 'comittee-check' : ''}">
-                        <div style="display:flex; justify-content:space-between; align-items: baseline;">
-                            <span style="font-weight:bold; font-size:14px;">${item.name}</span>
-                            <span class="badge ${item.status ? 'badge-done' : 'badge-pending'}">${item.status ? 'เสร็จ' : 'รอ'}</span>
-                        </div>
-                        <div style="font-size:11px; color:#64748b;">👤 ${item.owner}</div>
-                        <div style="font-size:10px; color:#3b82f6; font-weight:500;">📅 ${item.appointment}</div>
-                    </div>
-                `);
+            <div class="station-card ${item.status ? 'done' : ''} ${item.customer_check ? 'comittee-check' : ''}">
+                <div style="display:flex; justify-content:space-between; align-items: baseline;">
+                    <span style="font-weight:bold; font-size:14px;">${item.name}</span>
+                    <span class="badge ${item.status ? 'badge-done' : 'badge-pending'}">${item.status ? 'เสร็จ' : 'รอ'}</span>
+                </div>
+                <div style="font-size:11px; color:#64748b;">👤 ${item.owner}</div>
+                <div style="font-size:10px; color:#3b82f6; font-weight:500;">📅 ${item.appointment}</div>
+            </div>
+        `);
+
                 card.click(function () {
                     maps.setZoom(16);
                     maps.panTo(marker.getPosition());
                 });
+
                 $('#station-list').append(card);
             });
             $('#stat-count').text(myData.length);
@@ -545,7 +550,7 @@
                 var matchDate = (dateQuery === 'all' || obj.date === dateQuery);
                 var matchType = (currentType === 'all') || (currentType === 'done' && obj.status) || (
                     currentType === 'pending' && !obj.status) || (currentType === 'comittee' && obj
-                    .customer_check);
+                        .customer_check);
                 var isVisible = matchSearch && matchDate && matchType;
                 obj.marker.setMap(isVisible ? maps : null);
                 $(`#station-list .station-card`).eq(i).toggle(isVisible);
