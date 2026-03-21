@@ -558,6 +558,19 @@
         streetViewControl: false,
       });
 
+      var headOffice = { lat: 12.9918546, lng: 101.4476654 };
+      // เพิ่ม Marker พิเศษสำหรับสำนักงานใหญ่
+      new google.maps.Marker({
+        position: headOffice,
+        map: maps,
+        label: {
+          text: "EECi",
+          color: "#000",
+          fontSize: '18px'
+        },
+        title: "สำนักงานใหญ่"
+      });
+
       // --- เพิ่มส่วนการเรียงลำดับข้อมูลตรงนี้ ---
       myData.sort(function (a, b) {
         // ฟังก์ชันแปลง "16/3/2569 13.00 น." เป็น Date Object เพื่อเปรียบเทียบ
