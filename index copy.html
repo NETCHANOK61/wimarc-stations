@@ -627,7 +627,7 @@
           cardStatusClass = "status-rescheduled";
         }
 
-        <!-- if (item.customer_check) iconFile = "https://maps.google.com/mapfiles/ms/icons/orange-dot.png"; -->
+        if (item.customer_check) iconFile = "https://maps.google.com/mapfiles/ms/icons/orange-dot.png";
 
         var marker = new google.maps.Marker({
           position: { lat: lat, lng: lng },
@@ -640,7 +640,7 @@
 
         var phoneNum = item.owner.replace(/[^0-9]/g, "");
         var card = $(`
-            <div class="station-card ${cardStatusClass}}">
+            <div class="station-card ${cardStatusClass} ${item.customer_check ? "comittee-check" : ""}">
               <div style="display:flex; justify-content:space-between; align-items: baseline;">
                 <span class="station-name">${item.name}</span>
                 <span class="badge ${badgeClass}">${statusLabel}</span>
