@@ -1,710 +1,929 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <title>Wimarc Site - Ultimate Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      margin: 0;
-      font-family: "Kanit", sans-serif;
-      background: #f1f5f9;
-      overflow: hidden;
-    }
+    <meta charset="UTF-8" />
+    <title>Wimarc Site - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: "Kanit", sans-serif;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
 
-    #map-canvas {
-      flex: 1;
-      width: 100%;
-    }
+        #map-canvas {
+            flex: 1;
+            width: 100%;
+        }
 
-    #bottom-sheet {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      z-index: 1000;
-      box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.2);
-      transition: height 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      border-radius: 25px 25px 0 0;
-      height: 60px;
-    }
+        #bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 1000;
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.2);
+            transition: height 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-radius: 25px 25px 0 0;
+            height: 60px;
+        }
 
-    #bottom-sheet.expanded {
-      height: 450px;
-    }
+        #bottom-sheet.expanded {
+            height: 440px;
+        }
 
-    .drag-handle {
-      width: 100%;
-      height: 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      background: #f8fafc;
-      border-radius: 25px 25px 0 0;
-    }
+        .drag-handle {
+            width: 100%;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background: #f8fafc;
+            border-radius: 25px 25px 0 0;
+        }
 
-    .handle-bar {
-      width: 50px;
-      height: 6px;
-      background: #cbd5e1;
-      border-radius: 3px;
-    }
+        .handle-bar {
+            width: 50px;
+            height: 6px;
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
 
-    .content-container {
-      display: flex;
-      flex-direction: column;
-      height: calc(100% - 30px);
-      padding: 0 15px 15px 15px;
-      overflow: hidden;
-    }
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 30px);
+            padding: 0 15px 15px 15px;
+            overflow: hidden;
+        }
 
-    .header-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
+        .tab-group {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 10px;
+        }
 
-    #searchInput,
-    #dateFilter {
-      padding: 12px;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      font-size: 16px;
-      font-family: "Kanit", sans-serif;
-      outline: none;
-    }
+        .tab-btn {
+            flex: 1;
+            padding: 8px 4px;
+            font-size: 13px;
+            font-family: "Kanit", sans-serif;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: #94a3b8;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition:
+                color 0.15s,
+                border-color 0.15s;
+        }
 
-    .filter-group {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-    }
+        .tab-btn.active {
+            color: #1e40af;
+            border-bottom-color: #1e40af;
+        }
 
-    .filter-btn {
-      white-space: nowrap;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-family: "Kanit", sans-serif;
-      border: 1px solid #cbd5e1;
-      background: white;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 500;
-    }
+        .tab-btn.tab-none.active {
+            color: #94a3b8;
+            border-bottom-color: #94a3b8;
+        }
 
-    .filter-btn.active {
-      background: #3b82f6;
-      color: white;
-      border-color: #2563eb;
-    }
+        .controls {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
 
-    #station-list {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-      gap: 15px;
-      overflow-x: auto;
-      padding: 5px 2px;
-      scroll-snap-type: x mandatory;
-    }
+        #searchInput {
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: "Kanit", sans-serif;
+            outline: none;
+            flex: 1;
+        }
 
-    .station-card {
-      min-width: 280px;
-      max-width: 280px;
-      height: 160px;
-      background: #fff;
-      border-radius: 15px;
-      padding: 15px;
-      border-left: 8px solid #94a3b8;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      flex-shrink: 0;
-      scroll-snap-align: start;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
+        #sort-btn {
+            padding: 9px 12px;
+            font-size: 13px;
+            font-family: "Kanit", sans-serif;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #334155;
+            font-weight: 500;
+            transition:
+                background 0.15s,
+                border-color 0.15s;
+        }
 
-    /* สีตามสถานะ */
-    .station-card.status-pending {
-      border-left-color: #94a3b8;
-    }
+        #sort-btn.asc {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
 
-    .station-card.status-completed {
-      border-left-color: #10b981;
-    }
+        #sort-btn.desc {
+            background: #faf5ff;
+            border-color: #8b5cf6;
+            color: #6d28d9;
+        }
 
-    .station-card.status-rescheduled {
-      border-left-color: #f59e0b;
-    }
+        /* legend */
+        .legend {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
 
-    .station-card.status-issues {
-      border-left-color: #ef4444;
-    }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #475569;
+        }
 
-    .station-card.comittee-check {
-      background: #fffbeb;
-      border-right: 8px solid #f59e0b;
-    }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
 
-    .badge {
-      padding: 4px 10px;
-      font-size: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-    }
+        #station-list {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 5px 2px;
+            scroll-snap-type: x mandatory;
+        }
 
-    .badge-pending {
-      background: #f1f5f9;
-      color: #475569;
-    }
+        .station-card {
+            min-width: 280px;
+            max-width: 280px;
+            height: 150px;
+            background: #fff;
+            border-radius: 15px;
+            padding: 15px;
+            border-left: 8px solid #94a3b8;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
 
-    .badge-done {
-      background: #d1fae5;
-      color: #064e3b;
-    }
+        /* สีขอบตาม slot */
+        .slot-20m {
+            border-left-color: #10b981;
+        }
 
-    .badge-warn {
-      background: #fef3c7;
-      color: #92400e;
-    }
+        /* เขียว: 20 เช้า/ไม่ระบุ */
+        .slot-20p {
+            border-left-color: #ec4899;
+        }
 
-    .badge-error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
+        /* ชมพู: 20 บ่าย */
+        .slot-21m {
+            border-left-color: #3b82f6;
+        }
 
-    .owner-link {
-      color: #2563eb;
-      text-decoration: underline;
-      font-weight: 600;
-      font-size: 14px;
-    }
+        /* ฟ้า: 21 เช้า/ไม่ระบุ */
+        .slot-21p {
+            border-left-color: #f97316;
+        }
 
-    .nav-btn {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      background: #10b981;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      text-decoration: none;
-      font-weight: 600;
-    }
-  </style>
+        /* ส้ม: 21 บ่าย */
+        .slot-none {
+            border-left-color: #cbd5e1;
+        }
+
+        /* เทา: ไม่มีนัด */
+
+        .owner-link {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .nav-btn {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: #10b981;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .tab-btn.tab-sign.active {
+            color: #854d0e;
+            border-bottom-color: #eab308;
+        }
+
+        .btn-map-route-morning {
+            flex: 1;
+            padding: 9px 8px;
+            font-size: 13px;
+            font-family: &quot;
+            Kanit&quot;
+            ,
+            sans-serif;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            background: #f0fdf4;
+            cursor: pointer;
+            color: #065f46;
+            font-weight: 500;
+        }
+
+        .btn-map-route-afternoon {
+            flex: 1;
+            padding: 9px 8px;
+            font-size: 13px;
+            font-family: &quot;
+            Kanit&quot;
+            ,
+            sans-serif;
+            border: 2px solid #f97316;
+            border-radius: 12px;
+            background: #fff7ed;
+            cursor: pointer;
+            color: #9a3412;
+            font-weight: 500;
+        }
+
+        .route-btn {
+            flex: 1;
+            padding: 9px 8px;
+            font-size: 13px;
+            font-family: 'Kanit', sans-serif;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            border-width: 2px;
+            border-style: solid;
+        }
+
+        .route-btn.slot-20m {
+            border-color: #10b981;
+            background: #f0fdf4;
+            color: #065f46;
+        }
+
+        .route-btn.slot-20p {
+            border-color: #ec4899;
+            background: #fdf2f8;
+            color: #831843;
+        }
+
+        .route-btn.slot-21m {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #1e3a8a;
+        }
+
+        .route-btn.slot-21p {
+            border-color: #f97316;
+            background: #fff7ed;
+            color: #9a3412;
+        }
+    </style>
 </head>
 
 <body>
-  <div id="map-canvas"></div>
+    <div id="map-canvas"></div>
 
-  <div id="bottom-sheet">
-    <div class="drag-handle" onclick="toggleSheet()">
-      <div class="handle-bar"></div>
-    </div>
-    <div class="content-container">
-      <div class="header-flex">
-        <h4 style="margin: 0">จุดติดตั้ง (<span id="stat-count">0</span>)</h4>
-        <span onclick="toggleSheet()"
-          style="color: #3b82f6; font-size: 12px; font-weight: bold; cursor: pointer;">ย่อ/ขยาย</span>
-      </div>
-      <div class="controls">
-        <div style="display: flex; gap: 5px">
-          <input type="text" id="searchInput" placeholder="ค้นหาชื่อ/เจ้าของ..." style="flex: 1.5" />
-          <select id="dateFilter" style="flex: 1" onchange="applyFilters()">
-            <option value="all">ทุกวันที่</option>
-          </select>
+    <div id="bottom-sheet">
+        <div class="drag-handle" onclick="toggleSheet()">
+            <div class="handle-bar"></div>
         </div>
-        <div class="filter-group">
-          <button class="filter-btn active" onclick="filterType('all', this)">ทั้งหมด</button>
-          <button class="filter-btn" onclick="filterType('pending', this)">รอติดตั้ง</button>
-          <button class="filter-btn" onclick="filterType('done', this)">ติดตั้งเสร็จ</button>
-          <button class="filter-btn" onclick="filterType('issue', this)">พบปัญหา</button>
-          <!-- <button class="filter-btn" onclick="filterType('comittee', this)">กรรมการ</button> -->
+        <div class="content-container">
+            <div class="header-flex">
+                <h4 style="margin: 0">จุดติดตั้ง (<span id="stat-count">0</span>)</h4>
+                <span onclick="toggleSheet()" style="
+              color: #3b82f6;
+              font-size: 12px;
+              font-weight: bold;
+              cursor: pointer;
+            ">ย่อ/ขยาย</span>
+            </div>
+
+            <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap">
+                <button class="route-btn slot-20m" onclick="openRoute('20m')">
+                    เส้นทาง 20/5/2569 เช้า
+                </button>
+                <button class="route-btn slot-20p" onclick="openRoute('20p')">
+                    เส้นทาง 20/5/2569 บ่าย
+                </button>
+                <button class="route-btn slot-21m" onclick="openRoute('21m')">
+                    เส้นทาง 21/5/2569 เช้า
+                </button>
+                <button class="route-btn slot-21p" onclick="openRoute('21p')">
+                    เส้นทาง 21/5/2569 บ่าย
+                </button>
+            </div>
+
+            <div class="tab-group">
+                <button class="tab-btn active" onclick="switchTab('scheduled', this)">
+                    นัดตรวจงาน (<span id="count-scheduled">0</span>)
+                </button>
+                <button class="tab-btn tab-sign" onclick="switchTab('sign', this)">
+                    ขาดใบเซ็น (<span id="count-sign">0</span>)
+                </button>
+                <!-- <button class="tab-btn tab-none" onclick="switchTab('none', this)">
+                    ไม่มีนัดตรวจ (<span id="count-none">0</span>)
+                </button> -->
+            </div>
+
+            <div id="controls-scheduled">
+                <div class="controls">
+                    <input type="text" id="searchInput" placeholder="ค้นหาชื่อ/เจ้าของ..." />
+                    <button id="sort-btn" class="asc" onclick="toggleSort()">
+                        <span id="sort-icon">↑</span>
+                        <span id="sort-label">วันเก่า→ใหม่</span>
+                    </button>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #10b981"></div>
+                        20 (เช้า)
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #ec4899"></div>
+                        20 บ่าย
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #3b82f6"></div>
+                        21 (เช้า)
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #f97316"></div>
+                        21 บ่าย
+                    </div>
+                </div>
+            </div>
+
+            <div id="station-list"></div>
         </div>
-      </div>
-      <div id="station-list"></div>
     </div>
-  </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-  <script>
-    const JOB_STATUS = {
-      PENDING: "PENDING",             // ยังไม่ได้ติดตั้ง
-      RESCHEDULED: "RESCHEDULED",     // เลื่อนนัด
-      COMPLETED: "COMPLETED",         // ติดตั้งแล้ว
-      ISSUES: "COMPLETED_WITH_ISSUES" // ติดตั้งแล้วแต่มีปัญหา
-    };
-    var maps,
-      markers = [],
-      currentType = "all";
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script>
+        var maps,
+            markers = [],
+            sortAsc = true,
+            currentTab = "scheduled";
 
-    var myData = [
-      {
-        name: "wimarc01 (โค้ดชุดเก่า)",
-        location: "12.732282, 101.851764",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณบุษบา (06-2439168-7)",
-        aircard: "06-1512079-5",
-        customer_check: false,
-        appointment: "23/3/2569 13.00 น.",
-        remark: "ตัว R ใส่ผิด",
-      },
-      {
-        name: "wimarc02 (โค้ดชุดเก่า)",
-        location: "12.678464, 101.862864",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณยุทธยงค์ (06-5971989-5)",
-        aircard: "06-1512143-1",
-        customer_check: false,
-        appointment: "23/3/2569 15.00 น.",
-        remark: "เซนเซอร์วัดปริมาณน้ำฝน",
-      },
-      {
-        name: "wimarc03",
-        location: "12.9658935,102.0816115",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณสนิท (08-1863728-4)",
-        aircard: "06-1512140-4",
-        customer_check: false,
-        appointment: "28/3/2569 13.00 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc04",
-        location: "12.9726188,102.0820655",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณบรรเจิด (09-8456988-4)",
-        aircard: "06-1512138-9",
-        customer_check: false,
-        appointment: "30/3/2569 08.30 น.",
-        remark: "",
-      },
-      {
-        name: "wimarc05",
-        location: "12.840496,102.034339",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณจุมพล (09-0768538-8)",
-        aircard: "06-1512126-0",
-        customer_check: true,
-        appointment: "27/3/2569 08.30 น.",
-        remark: "แอร์การ์ดเสีย"
-      },
-      {
-        name: "wimarc06 (โค้ดชุดเก่า)",
-        location: "12.611287,102.042947",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณจุมพล (09-0768538-8)",
-        aircard: "06-1512121-5",
-        customer_check: false,
-        appointment: "24/3/2569 15.00 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc07",
-        location: "12.996834,101.681271",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณพีรพล (08-9045651-2)",
-        aircard: "06-1512079-9",
-        customer_check: false,
-        appointment: "30/3/2569 13.00 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc08",
-        location: "12.294404,102.336026",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณนภกร (09-5590522-1)",
-        aircard: "06-1512117-0",
-        customer_check: false,
-        appointment: "1/4/2569 10.00 น.",
-        remark: "กล้อง main เสีย"
-      },
-      {
-        name: "wimarc09",
-        location: "12.294404,102.336026",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณนภกร (09-5590522-1)",
-        aircard: "06-1512117-0",
-        customer_check: true,
-        appointment: "1/4/2569 15.00 น.",
-        remark: "ไม่พบข้อมูลเซนเซอร์ของสถานีที่ 1"
-      },
-      {
-        name: "wimarc10 (โค้ดชุดเก่า)",
-        location: "12.8019996,101.76122",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณสำริทธิ์ (095-163-2525)",
-        aircard: "06-1512090-1",
-        customer_check: false,
-        appointment: "23/3/2569 08.30 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc11 (โค้ดชุดเก่า)",
-        location: "12.7953271,102.1166199",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณอุมาภรณ์ (06-1546641-6)",
-        aircard: "06-1512090-0",
-        customer_check: false,
-        appointment: "25/3/2569 15.00 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc12 (โค้ดชุดเก่า)",
-        location: "12.723251,102.094171",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณวงสิน (095-536-3695)",
-        aircard: "06-1512135-0",
-        customer_check: false,
-        appointment: "25/3/2569 08.30 น.",
-        remark: "เซนเซอร์วัดปริมาณน้ำฝน, ขาดตัว R, กล้องไม่ส่งข้อมูล"
-      },
-      {
-        name: "wimarc13",
-        location: "12.5460791,102.3555228",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณพงศกร (09-3430336-9)",
-        aircard: "06-1512133-2",
-        customer_check: false,
-        appointment: "28/3/2569 13.00 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc14",
-        location: "12.507163,102.254929",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณณัฐวรรณ (06-5993542-4)",
-        aircard: "06-1512131-5",
-        customer_check: false,
-        appointment: "28/3/2569 08.30 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc15",
-        location: "13.0441232,102.0122386",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณเจษฎา (09-7247393-9)",
-        aircard: "08-4115884-0",
-        customer_check: false,
-        appointment: "30/3/2569 13.00 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc16",
-        location: "12.9523333,102.0851389",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณบานชื่น (08-9933085-8)",
-        aircard: "06-1512130-5",
-        customer_check: false,
-        appointment: "28/3/2569 08.30 น.",
-        remark: "ไม่พบข้อมูลจากเซนเซอร์จากตู้ main"
-      },
-      {
-        name: "wimarc17",
-        location: "12.796557,102.230057",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณณีรนุช (08-0095599-2)",
-        aircard: "06-1512129-2",
-        customer_check: false,
-        appointment: "27/3/2569 08.30 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc18",
-        location: "12.824348,101.99133",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณพรนภา (08-9204200-7)",
-        aircard: "06-1512094-1",
-        customer_check: false,
-        appointment: "26/3/2569 13.00 น.",
-        remark: "ไม่พบข้อมูลจากเซนเซอร์จากตู้ client"
-      },
-      {
-        name: "wimarc19 (โค้ดชุดเก่า)",
-        location: "12.661213,101.978407",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณกนกวรรณ (08-1983995-8)",
-        aircard: "06-1512095-6",
-        customer_check: false,
-        appointment: "24/3/2569 11.30 น.",
-        remark: "เซนเซอร์วัดปริมาณน้ำฝน, ขาดตัว R, กล้องไม่ส่งข้อมูล"
-      },
-      {
-        name: "wimarc20",
-        location: "12.88253,102.012395",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณฑีประจักษ์ (06-5449944-6)",
-        aircard: "09-5008899-5",
-        customer_check: true,
-        appointment: "27/3/2569 14.00 น.",
-        remark: "กล้องไม่ส่งข้อมูล"
-      },
-      {
-        name: "wimarc21",
-        location: "12.8258683,101.9714885",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณกัญจนรัตน์ (08-6335849-9)",
-        aircard: "06-2851095-1",
-        customer_check: false,
-        appointment: "26/3/2569 08.30 น.",
-        remark: "กล้องไม่ส่งข้อมูล เนื่องจากอินเทอร์เน็ต"
-      },
-      {
-        name: "wimarc22 (โค้ดชุดเก่า)",
-        location: "12.7042945,101.994341",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณมินตรา (08-7934066-3)",
-        aircard: "06-1512101-7",
-        customer_check: false,
-        appointment: "24/3/2569 08.30 น.",
-        remark: "เซนเซอร์วัดปริมาณน้ำฝน, ขาดตัว R"
-      },
-      {
-        name: "wimarc23",
-        location: "12.7690185,102.2643145",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณบัณฑิต (06-5994155-9)",
-        aircard: "06-1512104-4",
-        customer_check: false,
-        appointment: "27/3/2569 13.00 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc24",
-        location: "12.752345,102.208851",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณสันฐิตา (09-2427820-2)",
-        aircard: "06-1512147-9",
-        customer_check: false,
-        appointment: "26/3/2569 08.30 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc25",
-        location: "12.773996,102.184929",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณรัชณีวรรณ (09-2428932-9)",
-        aircard: "08-3793162-4",
-        customer_check: false,
-        appointment: "26/3/2569 13.00 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc26",
-        location: "12.778423,102.084564",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณพิพัฒน์ (08-1421444-5)",
-        aircard: "06-1512103-0",
-        customer_check: false,
-        appointment: "29/3/2569 08.30 น.",
-        remark: ""
-      },
-      {
-        name: "wimarc27",
-        location: "12.727065, 102.100894",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณสุวิจักขณ์ (06-2649419-3)",
-        aircard: "06-4764331-7",
-        customer_check: false,
-        appointment: "29/3/2569 13.00 น.",
-        remark: "กล้องไม่ส่งข้อมูล"
-      },
-      {
-        name: "wimarc28 (โค้ดชุดเก่า)",
-        location: "12.509989,102.167736",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณอาทิตย์ (08-9752680-6)",
-        aircard: "09-1062692-3",
-        customer_check: false,
-        appointment: "25/3/2569 08.30 น.",
-        remark: "เซนเซอร์วัดปริมาณน้ำฝน, ขาดตัว R, กล้องไม่ส่งข้อมูล"
-      },
-      {
-        name: "wimarc29",
-        location: "12.8184569,101.5935864",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณณรงค์ชัย (08-5389283-8)",
-        aircard: "06-1512116-1",
-        customer_check: false,
-        appointment: "30/3/2569 08.30 น.",
-        remark: "***เข้าไปอัปเดตโค้ดที่ตู้***"
-      },
-      {
-        name: "wimarc30",
-        location: "12.379476, 102.440725",
-        status: JOB_STATUS.COMPLETED,
-        owner: "คุณธีรโชติ (09-9394978-2)",
-        aircard: "06-1512113-0",
-        customer_check: false,
-        appointment: "29/3/2569 10.00 น.",
-        remark: ""
-      },
-    ];
+        var myData = [
+            {
+                order: 0,
+                name: "wimarc01",
+                location: "12.732282, 101.851764",
+                owner: "คุณบุษบา (06-2439168-7)",
+                aircard: "06-1512079-5",
+                appointment: "",
+                remark: "",
+            },
+            {
+                order: 0,
+                name: "wimarc02",
+                location: "12.678464, 101.862864",
+                owner: "คุณยุทธยงค์ (06-5971989-5)",
+                aircard: "06-1512143-1",
+                appointment: "",
+                remark: "",
+            },
+            {
+                order: 19,
+                name: "wimarc03",
+                location: "12.9658935,102.0816115",
+                owner: "คุณสนิท (08-1863728-4)",
+                aircard: "06-1512140-4",
+                appointment: "21/5/2569 บ่าย",
+                remark: "",
+            },
+            {
+                order: 20,
+                name: "wimarc04",
+                location: "12.9726188,102.0820655",
+                owner: "คุณบรรเจิด (09-8456988-4)",
+                aircard: "06-1512138-9",
+                appointment: "21/5/2569 บ่าย",
+                remark: "",
+            },
+            {
+                order: 13,
+                name: "wimarc05",
+                location: "12.840496,102.034339",
+                owner: "คุณจุมพล (09-0768538-8)",
+                aircard: "06-1512126-0",
+                appointment: "21/5/2569",
+                remark: "ไปสวนด้านบนแล้ว (06)",
+            },
+            {
+                order: 5,
+                name: "wimarc06",
+                location: "12.611287,102.042947",
+                owner: "คุณจุมพล (09-0768538-8)",
+                aircard: "06-1512121-5",
+                appointment: "20/5/2569 บ่าย",
+                remark: "",
+            },
+            {
+                order: 0,
+                name: "wimarc07",
+                location: "12.996834,101.681271",
+                owner: "คุณพีรพล (08-9045651-2)",
+                aircard: "06-1512079-9",
+                appointment: "",
+                remark: "ใบเซ็นรับอุปกรณ์",
+            },
+            {
+                order: 0,
+                name: "wimarc08",
+                location: "12.294404,102.336026",
+                owner: "คุณนภกร (09-5590522-1)",
+                aircard: "06-1512117-0",
+                appointment: "",
+                remark: "",
+            },
+            {
+                order: 0,
+                name: "wimarc09",
+                location: "12.294404,102.336026",
+                owner: "คุณนภกร (09-5590522-1)",
+                aircard: "06-1512117-0",
+                appointment: "",
+                remark: "",
+            },
+            {
+                order: 0,
+                name: "wimarc10",
+                location: "12.8019996,101.76122",
+                owner: "คุณสำริทธิ์ (095-163-2525)",
+                aircard: "06-1512090-1",
+                appointment: "",
+                remark: "",
+            },
+            {
+                order: 14,
+                name: "wimarc11",
+                location: "12.7953271,102.1166199",
+                owner: "คุณอุมาภรณ์ (06-1546641-6)",
+                aircard: "06-1512090-0",
+                appointment: "21/5/2569",
+                remark: "",
+            },
+            {
+                order: 6,
+                name: "wimarc12",
+                location: "12.723251,102.094171",
+                owner: "คุณวงสิน (095-536-3695)",
+                aircard: "06-1512135-0",
+                appointment: "20/5/2569 บ่าย",
+                remark: "ใบเซ็นรับอุปกรณ์",
+            },
+            {
+                order: 0,
+                name: "wimarc13",
+                location: "12.5460791,102.3555228",
+                owner: "คุณพงศกร (09-3430336-9)",
+                aircard: "06-1512133-2",
+                appointment: "",
+                remark: "",
+            },
+            {
+                order: 17,
+                name: "wimarc14",
+                location: "12.507163,102.254929",
+                owner: "คุณณัฐวรรณ (06-5993542-4)",
+                aircard: "06-1512131-5",
+                appointment: "21/5/2569 บ่าย",
+                remark: "",
+            },
+            {
+                order: 0,
+                name: "wimarc15",
+                location: "13.0441232,102.0122386",
+                owner: "คุณเจษฎา (09-7247393-9)",
+                aircard: "08-4115884-0",
+                appointment: "",
+                remark: "",
+            },
+            {
+                order: 18,
+                name: "wimarc16",
+                location: "12.9523333,102.0851389",
+                owner: "คุณบานชื่น (08-9933085-8)",
+                aircard: "06-1512130-5",
+                appointment: "21/5/2569 บ่าย",
+                remark: "",
+            },
+            {
+                order: 10,
+                name: "wimarc17",
+                location: "12.796557,102.230057",
+                owner: "คุณณีรนุช (08-0095599-2)",
+                aircard: "06-1512129-2",
+                appointment: "20/5/2569 บ่าย",
+                remark: "ไม่ว่าง",
+            },
+            {
+                order: 1,
+                name: "wimarc18",
+                location: "12.824348, 101.991330",
+                owner: "คุณพรนภา (08-9204200-7)",
+                aircard: "06-1512094-1",
+                appointment: "20/5/2569",
+                remark: "ไม่ว่าง",
+            },
+            {
+                order: 4,
+                name: "wimarc19",
+                location: "12.661213,101.978407",
+                owner: "คุณกนกวรรณ (08-1983995-8)",
+                aircard: "06-1512095-6",
+                appointment: "20/5/2569",
+                remark: "ใบเซ็นรับอุปกรณ์",
+            },
+            {
+                order: 15,
+                name: "wimarc20",
+                location: "12.88253,102.012395",
+                owner: "คุณฑีประจักษ์ (06-5449944-6)",
+                aircard: "09-5008899-5",
+                appointment: "21/5/2569",
+                remark: "",
+            },
+            {
+                order: 2,
+                name: "wimarc21",
+                location: "12.8258683,101.9714885",
+                owner: "คุณกัญจนรัตน์ (08-6335849-9)",
+                aircard: "06-2851095-1",
+                appointment: "20/5/2569",
+                remark: "",
+            },
+            {
+                order: 3,
+                name: "wimarc22",
+                location: "12.7042945,101.994341",
+                owner: "คุณมินตรา (08-7934066-3)",
+                aircard: "06-1512101-7",
+                appointment: "20/5/2569",
+                remark: "ใบเซ็นรับอุปกรณ์",
+            },
+            {
+                order: 9,
+                name: "wimarc23",
+                location: "12.7690185,102.2643145",
+                owner: "คุณบัณฑิต (06-5994155-9)",
+                aircard: "06-1512104-4",
+                appointment: "20/5/2569 บ่าย",
+                remark: "ว่าง 13.00-14.30 น.",
+            },
+            {
+                order: 8,
+                name: "wimarc24",
+                location: "12.752345,102.208851",
+                owner: "คุณสันฐิตา (09-2427820-2)",
+                aircard: "06-1512147-9",
+                appointment: "20/5/2569 บ่าย",
+                remark: "",
+            },
+            {
+                order: 11,
+                name: "wimarc25",
+                location: "12.773996,102.184929",
+                owner: "คุณรัชณีวรรณ (09-2428932-9)",
+                aircard: "08-3793162-4",
+                appointment: "21/5/2569",
+                remark: "",
+            },
+            {
+                order: 12,
+                name: "wimarc26",
+                location: "12.778423,102.084564",
+                owner: "คุณพิพัฒน์ (08-1421444-5)",
+                aircard: "06-1512103-0",
+                appointment: "21/5/2569",
+                remark: "",
+            },
+            {
+                order: 7,
+                name: "wimarc27",
+                location: "12.727065, 102.100894",
+                owner: "คุณสุวิจักขณ์ (06-2649419-3)",
+                aircard: "06-4764331-7",
+                appointment: "20/5/2569 บ่าย",
+                remark: "",
+            },
+            {
+                order: 16,
+                name: "wimarc28",
+                location: "12.509989,102.167736",
+                owner: "คุณอาทิตย์ (08-9752680-6)",
+                aircard: "09-1062692-3",
+                appointment: "21/5/2569 บ่าย",
+                remark: "ใบเซ็นรับอุปกรณ์",
+            },
+            {
+                order: 0,
+                name: "wimarc29",
+                location: "12.8184569,101.5935864",
+                owner: "คุณณรงค์ชัย (08-5389283-8)",
+                aircard: "06-1512116-1",
+                appointment: "",
+                remark: "",
+            },
+            {
+                order: 0,
+                name: "wimarc30",
+                location: "12.379476, 102.440725",
+                owner: "คุณธีรโชติ (09-9394978-2)",
+                aircard: "06-1512113-0",
+                appointment: "",
+                remark: "",
+            },
+        ];
 
-    function initMap() {
-      maps = new google.maps.Map(document.getElementById("map-canvas"), {
-        center: { lat: 12.7322, lng: 101.8517 },
-        zoom: 10,
-        mapTypeControl: false,
-        streetViewControl: false,
-      });
-
-      var headOffice = { lat: 12.9918546, lng: 101.4476654 };
-      // เพิ่ม Marker พิเศษสำหรับสำนักงานใหญ่
-      new google.maps.Marker({
-        position: headOffice,
-        map: maps,
-        label: {
-          text: "EECi",
-          color: "#000",
-          fontSize: '18px'
-        },
-        title: "สำนักงานใหญ่"
-      });
-
-      // จัดการข้อมูลและ Sort
-      myData.sort((a, b) => parseThaiDate(a.appointment) - parseThaiDate(b.appointment));
-
-      populateDateFilter();
-      renderAll(myData);
-    }
-
-    function parseThaiDate(dateStr) {
-      var parts = dateStr.split(' ');
-      var dmy = parts[0].split('/');
-      var time = parts[1].replace('.', ':');
-      return new Date(parseInt(dmy[2]) - 543, parseInt(dmy[1]) - 1, parseInt(dmy[0]), time.split(':')[0], time.split(':')[1]);
-    }
-
-    function renderAll(data) {
-      $("#station-list").empty();
-      markers = []; // ล้าง marker เก่าก่อนเรนเดอร์ใหม่
-
-      $.each(data, function (i, item) {
-        var coords = item.location.split(",");
-        var lat = parseFloat(coords[0]), lng = parseFloat(coords[1]);
-
-        // กำหนด Logic การแสดงผล
-        let iconFile = "https://maps.google.com/mapfiles/ms/icons/blue-dot.png";
-        let badgeClass = "badge-pending";
-        let statusLabel = "รอติดตั้ง";
-        let cardStatusClass = "status-pending";
-
-        if (item.status === JOB_STATUS.COMPLETED) {
-          iconFile = "https://maps.google.com/mapfiles/ms/icons/green-dot.png";
-          badgeClass = "badge-done";
-          statusLabel = "เสร็จสิ้น";
-          cardStatusClass = "status-completed";
-        } else if (item.status === JOB_STATUS.ISSUES) {
-          iconFile = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
-          badgeClass = "badge-error";
-          statusLabel = "พบปัญหา";
-          cardStatusClass = "status-issues";
-        } else if (item.status === JOB_STATUS.RESCHEDULED) {
-          iconFile = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
-          badgeClass = "badge-warn";
-          statusLabel = "เลื่อนนัด";
-          cardStatusClass = "status-rescheduled";
+        // คืน slot key จาก appointment string
+        function getSlot(appointment) {
+            if (!appointment) return "none";
+            var parts = appointment.trim().split(" ");
+            var day = parts[0].split("/")[0]; // วันที่ตัวเลข
+            var isBaai = parts[1] === "บ่าย";
+            if (day === "20" && !isBaai) return "20m";
+            if (day === "20" && isBaai) return "20p";
+            if (day === "21" && !isBaai) return "21m";
+            if (day === "21" && isBaai) return "21p";
+            return "other";
         }
 
-        <!-- if (item.customer_check) iconFile = "https://maps.google.com/mapfiles/ms/icons/orange-dot.png"; -->
+        var SLOT_COLOR = {
+            "20m": "#10b981", // เขียว
+            "20p": "#ec4899", // ชมพู
+            "21m": "#3b82f6", // ฟ้า
+            "21p": "#f97316", // ส้ม
+            none: "#cbd5e1", // เทา
+            other: "#a855f7", // ม่วง (วันอื่นๆ)
+        };
 
-        var marker = new google.maps.Marker({
-          position: { lat: lat, lng: lng },
-          map: maps,
-          icon: iconFile,
-          label: { text: item.name, fontWeight: "bold", fontSize: "11px" },
-        });
+        var SLOT_MARKER = {
+            "20m": "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+            "20p": "https://maps.google.com/mapfiles/ms/icons/pink-dot.png",
+            "21m": "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+            "21p": "https://maps.google.com/mapfiles/ms/icons/orange-dot.png",
+            none: "https://maps.google.com/mapfiles/ms/icons/ltblue-dot.png",
+            other: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png",
+        };
 
-        markers.push({ ...item, marker: marker, date: item.appointment.split(" ")[0] });
+        function parseThaiDate(appt) {
+            if (!appt) return new Date(9999, 0, 1);
+            var parts = appt.trim().split(" ");
+            var dmy = parts[0].split("/");
+            var d = parseInt(dmy[0]),
+                m = parseInt(dmy[1]),
+                y = parseInt(dmy[2]) - 543;
+            var hour = parts[1] === "บ่าย" ? 13 : 0;
+            return new Date(y, m - 1, d, hour);
+        }
 
-        var phoneNum = item.owner.replace(/[^0-9]/g, "");
-        var card = $(`
-            <div class="station-card ${cardStatusClass}}">
-              <div style="display:flex; justify-content:space-between; align-items: baseline;">
-                <span class="station-name">${item.name}</span>
-                <span class="badge ${badgeClass}">${statusLabel}</span>
-              </div>
-              <div style="font-size:14px; margin-top:5px;">
-                เจ้าของ: <a href="tel:${phoneNum}" class="owner-link" onclick="event.stopPropagation();">${item.owner}</a>
-              </div>
-              <div class="info-text">เบอร์เน็ต: ${item.aircard || "-"}</div>
-              <div class="appointment-text">นัดหมาย: ${item.appointment}</div>
-              ${item.remark ? `<div style="font-size:11px; color:red;">หมายเหตุ: ${item.remark}</div>` : ""}
-              <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="nav-btn" onclick="event.stopPropagation();">นำทาง</a>
+        function getSortedData(data) {
+            return [...data].sort((a, b) => {
+                var diff = (a.order ?? 9999) - (b.order ?? 9999);
+                return sortAsc ? diff : -diff;
+            });
+        }
+
+        function toggleSort() {
+            sortAsc = !sortAsc;
+            $("#sort-btn")
+                .removeClass("asc desc")
+                .addClass(sortAsc ? "asc" : "desc");
+            $("#sort-icon").text(sortAsc ? "↑" : "↓");
+            $("#sort-label").text(sortAsc ? "วันเก่า→ใหม่" : "วันใหม่→เก่า");
+            applyFilters();
+        }
+
+        function switchTab(tab, btn) {
+            currentTab = tab;
+            $(".tab-btn").removeClass("active");
+            $(btn).addClass("active");
+            $("#controls-scheduled").toggle(tab === "scheduled" || tab === "sign");
+            applyFilters();
+        }
+
+        function initMap() {
+            maps = new google.maps.Map(document.getElementById("map-canvas"), {
+                center: { lat: 12.7322, lng: 101.8517 },
+                zoom: 10,
+                mapTypeControl: false,
+                streetViewControl: false,
+            });
+
+            new google.maps.Marker({
+                position: { lat: 12.9918546, lng: 101.4476654 },
+                map: maps,
+                label: { text: "EECi", color: "#000", fontSize: "18px" },
+                title: "สำนักงานใหญ่",
+            });
+
+            updateTabCounts();
+            applyFilters();
+        }
+
+        function updateTabCounts() {
+            $("#count-scheduled").text(
+                myData.filter((d) => d.appointment !== "").length,
+            );
+            $("#count-none").text(
+                myData.filter((d) => d.appointment === "").length,
+            );
+            $("#count-sign").text(
+                myData.filter((d) => d.remark === "ใบเซ็นรับอุปกรณ์").length,
+            );
+        }
+
+        function renderAll(data) {
+            $("#station-list").empty();
+            markers = [];
+
+            if (data.length === 0) {
+                $("#station-list").append(
+                    `<div style="color:#94a3b8;font-size:14px;padding:20px;">ไม่พบรายการ</div>`,
+                );
+                $("#stat-count").text(0);
+                return;
+            }
+
+            $.each(data, function (i, item) {
+                var coords = item.location.split(",");
+                var lat = parseFloat(coords[0]),
+                    lng = parseFloat(coords[1]);
+                var slot = getSlot(item.appointment);
+                var color = SLOT_COLOR[slot] || "#94a3b8";
+                var markerIcon = SLOT_MARKER[slot] || SLOT_MARKER["none"];
+
+                var marker = new google.maps.Marker({
+                    position: { lat: lat, lng: lng },
+                    map: maps,
+                    icon: markerIcon,
+                    label: { text: item.name, fontWeight: "bold", fontSize: "11px" },
+                });
+
+                markers.push({ ...item, marker });
+
+                var phoneNum = item.owner.replace(/[^0-9]/g, "");
+                var apptDisplay = item.appointment || "ยังไม่ได้นัด";
+
+                var card = $(`
+          <div class="station-card" style="border-left-color:${color};">
+            <div style="font-weight:600;font-size:15px;margin-bottom:5px;">${item.name}</div>
+            <div style="font-size:14px;">
+              เจ้าของ: <a href="tel:${phoneNum}" class="owner-link" onclick="event.stopPropagation();">${item.owner}</a>
             </div>
-          `);
+            <div style="font-size:13px;color:#475569;">เบอร์เน็ต: ${item.aircard || "-"}</div>
+            <div style="font-size:13px;color:#475569;">นัดหมาย: ${apptDisplay}</div>
+            ${item.remark ? `<div style="font-size:11px;color:red;margin-top:2px;">หมายเหตุ: ${item.remark}</div>` : ""}
+            <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="nav-btn" onclick="event.stopPropagation();">นำทาง</a>
+          </div>
+        `);
 
-        card.click(() => { maps.setZoom(16); maps.panTo(marker.getPosition()); });
-        $("#station-list").append(card);
-      });
-      $("#stat-count").text(data.length);
-    }
+                card.click(() => {
+                    maps.setZoom(16);
+                    maps.panTo(marker.getPosition());
+                });
+                $("#station-list").append(card);
+            });
 
-    function filterType(type, btn) {
-      $(".filter-btn").removeClass("active");
-      $(btn).addClass("active");
-      currentType = type;
-      applyFilters();
-    }
+            $("#stat-count").text(data.length);
+        }
 
-    function applyFilters() {
-      var searchQuery = $("#searchInput").val().toLowerCase();
-      var dateQuery = $("#dateFilter").val();
-      var visibleCount = 0;
-      var bounds = new google.maps.LatLngBounds();
+        function applyFilters() {
+            var baseData;
+            if (currentTab === "scheduled") {
+                baseData = myData.filter((d) => d.appointment !== "");
+            } else if (currentTab === "none") {
+                baseData = myData.filter((d) => d.appointment === "");
+            } else if (currentTab === "sign") {
+                baseData = myData.filter((d) => d.remark === "ใบเซ็นรับอุปกรณ์");
+            }
 
-      $.each(markers, function (i, obj) {
-        var matchSearch = obj.name.toLowerCase().includes(searchQuery) || obj.owner.toLowerCase().includes(searchQuery);
-        var matchDate = dateQuery === "all" || obj.date === dateQuery;
+            if (currentTab === "scheduled" || currentTab === "sign") {
+                var q = $("#searchInput").val().toLowerCase();
+                if (q)
+                    baseData = baseData.filter(
+                        (d) =>
+                            d.name.toLowerCase().includes(q) ||
+                            d.owner.toLowerCase().includes(q),
+                    );
+                baseData = getSortedData(baseData);
+            }
 
-        var matchType = false;
-        if (currentType === "all") matchType = true;
-        else if (currentType === "done") matchType = (obj.status === JOB_STATUS.COMPLETED);
-        else if (currentType === "pending") matchType = (obj.status === JOB_STATUS.PENDING || obj.status === JOB_STATUS.RESCHEDULED);
-        else if (currentType === "issue") matchType = (obj.status === JOB_STATUS.ISSUES);
-        else if (currentType === "comittee") matchType = obj.customer_check;
+            renderAll(baseData);
 
-        var isVisible = matchSearch && matchDate && matchType;
-        obj.marker.setMap(isVisible ? maps : null);
-        $(`#station-list .station-card`).eq(i).toggle(isVisible);
-        if (isVisible) { visibleCount++; bounds.extend(obj.marker.getPosition()); }
-      });
+            if (markers.length > 0) {
+                var bounds = new google.maps.LatLngBounds();
+                $.each(markers, function (i, obj) {
+                    bounds.extend(obj.marker.getPosition());
+                });
+                if (!bounds.isEmpty()) maps.fitBounds(bounds);
+            }
+        }
 
-      $("#stat-count").text(visibleCount);
-      if (visibleCount > 0 && !bounds.isEmpty()) maps.fitBounds(bounds);
-    }
+        function toggleSheet() {
+            $("#bottom-sheet").toggleClass("expanded");
+        }
 
-    function toggleSheet() { $("#bottom-sheet").toggleClass("expanded"); }
-    function populateDateFilter() {
-      let dates = [...new Set(myData.map(item => item.appointment.split(" ")[0]))];
-      dates.forEach(d => $("#dateFilter").append(`<option value="${d}">${d}</option>`));
-    }
+        $("#searchInput").on("keyup", applyFilters);
 
-    $("#searchInput").on("keyup", applyFilters);
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUgiH-ZcFiJo8WZlbHb1gFfoJx6WDzbPE&callback=initMap"
-    async defer></script>
+        function openRoute(slot) {
+            var slotLabel = {
+                "20m": "20 เช้า",
+                "20p": "20 บ่าย",
+                "21m": "21 เช้า",
+                "21p": "21 บ่าย",
+            };
+
+            // กรองจาก myData ตาม slot แล้ว sort ตาม order
+            var filtered = getSortedData(
+                myData.filter((d) => getSlot(d.appointment) === slot),
+            );
+
+            if (filtered.length === 0) {
+                alert("ไม่มีจุดหมายวันที่ " + (slotLabel[slot] || slot));
+                return;
+            }
+
+            if (filtered.length === 1) {
+                var loc = filtered[0].location.trim().replace(/\s/g, "");
+                window.open(
+                    "https://www.google.com/maps/search/?api=1&query=" + loc,
+                    "_blank",
+                );
+                return;
+            }
+
+            var origin = filtered[0].location.trim().replace(/\s/g, "");
+            var destination = filtered[filtered.length - 1].location
+                .trim()
+                .replace(/\s/g, "");
+            var waypoints = filtered
+                .slice(1, -1)
+                .map((d) => d.location.trim().replace(/\s/g, ""))
+                .join("|");
+
+            var url =
+                "https://www.google.com/maps/dir/?api=1" +
+                "&origin=" +
+                origin +
+                "&destination=" +
+                destination +
+                (waypoints ? "&waypoints=" + encodeURIComponent(waypoints) : "") +
+                "&travelmode=driving";
+
+            window.open(url, "_blank");
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUgiH-ZcFiJo8WZlbHb1gFfoJx6WDzbPE&callback=initMap"
+        async defer></script>
 </body>
 
 </html>
